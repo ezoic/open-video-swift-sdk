@@ -37,12 +37,25 @@ Do **not** stamp `domain_id` 708527 or `is_humix_app=1` (those are the OV store 
 - Ads: `EzoicInstreamAd(adUnitId: 201)` → GAM VAST URL → IMA. Sol placement is **domain + bundle**, not this numeric id. No-fill / init miss → content plays.
 - Pixels: GET `vid.gif?e=` + `grapefruit.gif` with publisher `domain_id`, `is_humix_app=0`, `insert_method=sdk_ios`.
 
-## Mac verify (not done on WSL)
+## Mac verify (iPhone Simulator)
+
+This package is **iOS 15+ only** (UIKit + Google IMA 3.33 SPM floor). Ads SDK stays iOS 14 — it does not host IMA. Host `swift test` compiles `OpenVideoCore` as macOS and fails — do **not** add `.macOS` to `Package.swift`. Same test pattern as Ads (`ezoic-swift-sdk` GitHub Actions `test.yml`).
+
+Private Ads dep is HTTPS; this machine’s `gh` is SSH. Rewrite for SPM fetch:
 
 ```bash
-swift test --filter OpenVideoCoreTests
-# then Xcode: embed OpenVideoPlayerView, play hackasaur video + playlist, confirm preroll or clean no-fill
+GIT_CONFIG_COUNT=1 \
+GIT_CONFIG_KEY_0=url.ssh://git@github.com/.insteadOf \
+GIT_CONFIG_VALUE_0=https://github.com/ \
+xcodebuild test \
+  -scheme OpenVideo-Package \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -only-testing:OpenVideoCoreTests \
+  -skipPackagePluginValidation \
+  COMPILER_INDEX_STORE_ENABLE=NO
 ```
+
+Pick any available iPhone Simulator if `iPhone 17` is missing (`xcrun simctl list devices available`). Then in Xcode: embed `OpenVideoPlayerView`, play hackasaur video `DdXGnZvrBZu` + playlist, confirm preroll or clean no-fill, pixels `domain_id=193293`.
 
 Demo app under `Examples/` is a later slice (ND3), not this package’s first commit.
 

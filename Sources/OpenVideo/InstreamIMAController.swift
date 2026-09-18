@@ -2,6 +2,7 @@ import AVFoundation
 import EzoicAdsSDK
 import Foundation
 import GoogleInteractiveMediaAds
+import OpenVideoCore
 import UIKit
 
 /// Host IMA: `EzoicInstreamAd` VAST URL → `IMAAdsLoader`. No-fill → content plays.

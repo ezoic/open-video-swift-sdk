@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "OpenVideo",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v15) // IMA SPM 3.33+ floor. ezoic-swift-sdk dep remains iOS 14 (separate package).
     ],
     products: [
         .library(name: "OpenVideoCore", targets: ["OpenVideoCore"]),
@@ -39,6 +39,11 @@ let package = Package(
             name: "OpenVideoCoreTests",
             dependencies: ["OpenVideoCore"],
             path: "Tests/OpenVideoCoreTests"
+        ),
+        .testTarget(
+            name: "OpenVideoTests",
+            dependencies: ["OpenVideo"],
+            path: "Tests/OpenVideoTests"
         ),
     ]
 )
