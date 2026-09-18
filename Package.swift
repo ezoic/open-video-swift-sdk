@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "OpenVideo",
     platforms: [
-        .iOS(.v15) // IMA SPM 3.33+ floor. ezoic-swift-sdk dep remains iOS 14 (separate package).
+        .iOS(.v14)
     ],
     products: [
         .library(name: "OpenVideoCore", targets: ["OpenVideoCore"]),
@@ -13,9 +13,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ezoic/ezoic-swift-sdk.git", from: "1.10.1"),
+        // 3.28+ Package.swift is iOS 15-only. 3.27.4 still .iOS(.v11) so this
+        // package can stay iOS 14 (covers 15+), matching ezoic-swift-sdk.
         .package(
             url: "https://github.com/googleads/swift-package-manager-google-interactive-media-ads-ios.git",
-            from: "3.23.0"
+            "3.23.0"..<"3.28.0"
         ),
     ],
     targets: [

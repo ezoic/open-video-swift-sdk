@@ -39,7 +39,9 @@ Do **not** stamp `domain_id` 708527 or `is_humix_app=1` (those are the OV store 
 
 ## Mac verify (iPhone Simulator)
 
-This package is **iOS 15+ only** (UIKit + Google IMA 3.33 SPM floor). Ads SDK stays iOS 14 — it does not host IMA. Host `swift test` compiles `OpenVideoCore` as macOS and fails — do **not** add `.macOS` to `Package.swift`. Same test pattern as Ads (`ezoic-swift-sdk` GitHub Actions `test.yml`).
+This package is **iOS 14+** (same floor as the ads SDK). iOS 15 is included. Host `swift test` compiles `OpenVideoCore` as macOS and fails — do **not** add `.macOS` to `Package.swift`. Same test pattern as Ads (`ezoic-swift-sdk` GitHub Actions `test.yml`).
+
+Google’s in-stream player package **3.28+** is iOS 15-only. This repo pins **3.23 ..< 3.28** so iOS 14 apps still compile.
 
 Private Ads dep is HTTPS; this machine’s `gh` is SSH. Rewrite for SPM fetch:
 
