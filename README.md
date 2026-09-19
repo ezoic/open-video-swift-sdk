@@ -8,7 +8,7 @@ Publisher native player (`OpenVideo` / `OpenVideoCore`). **Not** the Open Video 
 
 1. Private GitHub: `ezoic/open-video-swift-sdk` and `ezoic/ezoic-swift-sdk`.
 2. Xcode: File → Add Package Dependencies → this repo (or a local path).
-3. Host `Info.plist`: `NSUserTrackingUsageDescription` (Ads ATT). App Transport as usual.
+3. Host `Info.plist`: `NSUserTrackingUsageDescription` (Ads ATT) and `GADApplicationIdentifier` (required by Google Ads — missing key crashes at launch). App Transport as usual. Demo uses Google’s sample App ID; a publisher app must use its own GAM iOS App ID.
 4. Before any player view:
 
 ```swift
@@ -59,7 +59,24 @@ xcodebuild test \
 
 Pick any available iPhone Simulator if `iPhone 17` is missing (`xcrun simctl list devices available`). Then in Xcode: embed `OpenVideoPlayerView`, play hackasaur video `DdXGnZvrBZu` + playlist, confirm preroll or clean no-fill, pixels `domain_id=193293`.
 
-Demo app under `Examples/` is a later slice (ND3), not this package’s first commit.
+## Demo (`Examples/OpenVideoDemo`)
+
+Official sample app (ND3). Uses this package via a local path. Acc = iPhone Simulator — not host `swift test`, not `PlayerLiveTests`.
+
+```bash
+GIT_CONFIG_COUNT=1 \
+GIT_CONFIG_KEY_0=url.ssh://git@github.com/.insteadOf \
+GIT_CONFIG_VALUE_0=https://github.com/ \
+xcodebuild -project Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj \
+  -scheme OpenVideoDemo \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -skipPackagePluginValidation \
+  COMPILER_INDEX_STORE_ENABLE=NO \
+  CODE_SIGNING_ALLOWED=NO \
+  build
+```
+
+Then run the app on that Simulator: configure `hackasaur.us`, **Play video** `DdXGnZvrBZu`, **Play playlist** `5tXyasXrAIp`.
 
 ## License
 
