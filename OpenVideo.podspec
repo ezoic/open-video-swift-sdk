@@ -10,6 +10,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'Sources/OpenVideoCore/**/*.swift', 'Sources/OpenVideo/**/*.swift'
   s.platform         = :ios, '15.0'
   s.swift_version    = '5.9'
+  s.static_framework = true
   s.dependency 'EzoicAdsSDK', '~> 1.11.0'
   s.dependency 'GoogleAds-IMA-iOS-SDK', '>= 3.23', '< 3.28'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
