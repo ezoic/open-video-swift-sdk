@@ -1,6 +1,8 @@
 import AVFoundation
 import Foundation
+#if canImport(OpenVideoCore)
 import OpenVideoCore
+#endif
 import UIKit
 
 /// Native player: HLS from `videosvc.ezoic.com/play`, IMA preroll, publisher pixels, 30s Premium preview.

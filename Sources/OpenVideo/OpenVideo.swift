@@ -1,9 +1,15 @@
 import Foundation
+#if canImport(OpenVideoCore)
 import OpenVideoCore
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
+#if canImport(EzoicAdsSDKBinary)
+import EzoicAdsSDKBinary
+#else
 import EzoicAdsSDK
+#endif
 
 /// Publisher Open Video iOS SDK. Call `configure(domain:)` before creating player views.
 public enum OpenVideo {

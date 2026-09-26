@@ -1,8 +1,14 @@
 import AVFoundation
+#if canImport(EzoicAdsSDKBinary)
+import EzoicAdsSDKBinary
+#else
 import EzoicAdsSDK
+#endif
 import Foundation
 import GoogleInteractiveMediaAds
+#if canImport(OpenVideoCore)
 import OpenVideoCore
+#endif
 import UIKit
 
 /// Host IMA: `EzoicInstreamAd` VAST URL → `IMAAdsLoader`. No-fill → content plays.
