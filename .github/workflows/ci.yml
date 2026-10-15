@@ -1,0 +1,96 @@
+name: CI
+
+# Two independent iOS jobs (ND8 DD-7):
+# - pod-lint: validates the CocoaPods package. Its Ads dependency (EzoicAdsSDK)
+#   is on public trunk, so it needs no secrets.
+# - spm: Swift Package tests + demo build. The SPM graph includes the private
+#   ezoic/ezoic-swift-sdk, so it needs the read-only deploy key secret
+#   ADS_SWIFT_DEPLOY_KEY. Without it the job reports a notice and does nothing.
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# macOS minutes are expensive; cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pod-lint:
+    name: CocoaPods lint
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Lint podspec
+        run: pod lib lint OpenVideo.podspec --allow-warnings
+
+  spm:
+    name: SPM tests and demo build
+    runs-on: macos-15
+    timeout-minutes: 45
+    env:
+      HAS_ADS_KEY: ${{ secrets.ADS_SWIFT_DEPLOY_KEY != '' }}
+    steps:
+      - name: Report missing Ads read access
+        if: env.HAS_ADS_KEY != 'true'
+        run: echo "::notice::ADS_SWIFT_DEPLOY_KEY is not set; SPM tests and demo build did not run. CocoaPods lint still validates the package."
+
+      - name: Check out source
+        if: env.HAS_ADS_KEY == 'true'
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Configure read access to ezoic/ezoic-swift-sdk
+        if: env.HAS_ADS_KEY == 'true'
+        env:
+          ADS_SWIFT_DEPLOY_KEY: ${{ secrets.ADS_SWIFT_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$ADS_SWIFT_DEPLOY_KEY" > ~/.ssh/ads_swift
+          chmod 600 ~/.ssh/ads_swift
+          # Pinned host key from https://api.github.com/meta (not trust-on-first-use).
+          echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' >> ~/.ssh/known_hosts
+          printf 'Host github.com\n  IdentityFile ~/.ssh/ads_swift\n  IdentitiesOnly yes\n' >> ~/.ssh/config
+          git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+
+      - name: Select Xcode
+        if: env.HAS_ADS_KEY == 'true'
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Unit tests and demo build
+        if: env.HAS_ADS_KEY == 'true'
+        run: |
+          set -euo pipefail
+          SIM_NAME="$(xcrun simctl list devices available | grep -oE 'iPhone [0-9][0-9A-Za-z ]*' | head -n 1 | sed -E 's/[[:space:]]+$//' || true)"
+          if [ -z "$SIM_NAME" ]; then
+            echo "::error::No available iPhone simulator found on the runner"
+            exit 1
+          fi
+          echo "Using simulator: $SIM_NAME"
+          # System git honours the SSH key and insteadOf rule above.
+          xcodebuild test -scheme OpenVideo-Package \
+            -destination "platform=iOS Simulator,name=$SIM_NAME" \
+            -only-testing:OpenVideoCoreTests \
+            -scmProvider system -skipPackagePluginValidation \
+            COMPILER_INDEX_STORE_ENABLE=NO
+          xcodebuild build -project Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj -scheme OpenVideoDemo \
+            -destination "platform=iOS Simulator,name=$SIM_NAME" \
+            -scmProvider system -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO COMPILER_INDEX_STORE_ENABLE=NO

@@ -1,13 +1,14 @@
 Pod::Spec.new do |s|
   s.name             = 'OpenVideo'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Open Video player for publisher iOS apps.'
   s.description      = 'Shows the shipped Open Video player. Ads and pixels stay in the native core.'
   s.homepage         = 'https://github.com/ezoic/open-video-swift-sdk'
   s.license          = { :type => 'Proprietary', :file => 'LICENSE' }
   s.author           = { 'Ezoic Inc' => 'support@ezoic.com' }
-  s.source           = { :git => 'git@github.com:ezoic/open-video-swift-sdk.git', :tag => 'v0.1.0' }
+  s.source           = { :git => 'git@github.com:ezoic/open-video-swift-sdk.git', :tag => 'v0.1.1' }
   s.source_files     = 'Sources/OpenVideoCore/**/*.swift', 'Sources/OpenVideo/**/*.swift'
+  s.resource_bundles = { 'OpenVideo_Privacy' => ['Sources/OpenVideo/PrivacyInfo.xcprivacy'] }
   s.platform         = :ios, '15.0'
   s.swift_version    = '5.9'
   s.static_framework = true

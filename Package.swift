@@ -35,7 +35,8 @@ let package = Package(
                     package: "swift-package-manager-google-interactive-media-ads-ios"
                 ),
             ],
-            path: "Sources/OpenVideo"
+            path: "Sources/OpenVideo",
+            resources: [.process("PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "OpenVideoCoreTests",

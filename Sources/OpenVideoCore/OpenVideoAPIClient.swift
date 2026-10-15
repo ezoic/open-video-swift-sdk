@@ -17,7 +17,7 @@ public enum OpenVideoEndpoints {
 }
 
 public final class OpenVideoAPIClient: @unchecked Sendable {
-    public static let clientHeader = "OpenVideoSDK/0.1.0"
+    public static let clientHeader = "OpenVideoSDK/0.1.1"
     private let session: URLSession
 
     public init(session: URLSession = .shared) {
@@ -69,7 +69,7 @@ public final class OpenVideoAPIClient: @unchecked Sendable {
     public func getPixel(url: URL) async {
         var request = URLRequest(url: url)
         request.setValue(Self.clientHeader, forHTTPHeaderField: "X-OV-Client")
-        request.setValue("OpenVideoSDK/0.1.0 (ios)", forHTTPHeaderField: "User-Agent")
+        request.setValue("\(Self.clientHeader) (ios)", forHTTPHeaderField: "User-Agent")
         _ = try? await session.data(for: request)
     }
 }
