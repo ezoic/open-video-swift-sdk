@@ -108,7 +108,7 @@
 			);
 			mainGroup = A1000000000000000000000A /* Root */;
 			packageReferences = (
-				A10000000000000000000013 /* XCLocalSwiftPackageReference "../../" */,
+				A10000000000000000000013 /* XCRemoteSwiftPackageReference "open-video-swift-sdk" */,
 			);
 			productRefGroup = A1000000000000000000000C /* Products */;
 			projectDirPath = "";
@@ -253,17 +253,21 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		A10000000000000000000013 /* XCLocalSwiftPackageReference "../../" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../..;
+/* Begin XCRemoteSwiftPackageReference section */
+		A10000000000000000000013 /* XCRemoteSwiftPackageReference "open-video-swift-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ezoic/open-video-swift-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.1.1;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A10000000000000000000014 /* OpenVideo */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A10000000000000000000013 /* XCLocalSwiftPackageReference "../../" */;
+			package = A10000000000000000000013 /* XCRemoteSwiftPackageReference "open-video-swift-sdk" */;
 			productName = OpenVideo;
 		};
 /* End XCSwiftPackageProductDependency section */

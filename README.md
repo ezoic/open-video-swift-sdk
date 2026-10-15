@@ -61,7 +61,7 @@ Pick any available iPhone Simulator if `iPhone 17` is missing (`xcrun simctl lis
 
 ## Demo (`Examples/OpenVideoDemo`)
 
-Official sample app (ND3). Uses this package via a local path. Acc = iPhone Simulator — not host `swift test`, not `PlayerLiveTests`.
+Official sample app (ND3). Installs the released package (exact version pinned in the project), so it is the first app to test each release; code under change is tested by the package tests. Acc = iPhone Simulator — not host `swift test`, not `PlayerLiveTests`.
 
 ```bash
 GIT_CONFIG_COUNT=1 \
@@ -70,7 +70,7 @@ GIT_CONFIG_VALUE_0=https://github.com/ \
 xcodebuild -project Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj \
   -scheme OpenVideoDemo \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -skipPackagePluginValidation \
+  -scmProvider system -skipPackagePluginValidation \
   COMPILER_INDEX_STORE_ENABLE=NO \
   CODE_SIGNING_ALLOWED=NO \
   build

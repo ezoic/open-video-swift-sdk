@@ -6,6 +6,8 @@ name: CI
 # - spm: Swift Package tests + demo build. The SPM graph includes the private
 #   ezoic/ezoic-swift-sdk, so it needs the read-only deploy key secret
 #   ADS_SWIFT_DEPLOY_KEY. Without it the job reports a notice and does nothing.
+#   The demo consumes the last released OpenVideo tag (read with the job token);
+#   the code being pushed is covered by the package tests.
 
 on:
   push:
@@ -56,7 +58,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Configure read access to ezoic/ezoic-swift-sdk
+      - name: Configure read access to the private packages
         if: env.HAS_ADS_KEY == 'true'
         env:
           ADS_SWIFT_DEPLOY_KEY: ${{ secrets.ADS_SWIFT_DEPLOY_KEY }}
@@ -67,8 +69,10 @@ jobs:
           chmod 600 ~/.ssh/ads_swift
           # Pinned host key from https://api.github.com/meta (not trust-on-first-use).
           echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' >> ~/.ssh/known_hosts
-          printf 'Host github.com\n  IdentityFile ~/.ssh/ads_swift\n  IdentitiesOnly yes\n' >> ~/.ssh/config
-          git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+          # A deploy key opens one repo, so each key gets its own host alias and
+          # only that repo's URL is rewritten to it.
+          printf 'Host gh-ads\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/ads_swift\n  IdentitiesOnly yes\n' >> ~/.ssh/config
+          git config --global url."ssh://git@gh-ads/ezoic/ezoic-swift-sdk".insteadOf "https://github.com/ezoic/ezoic-swift-sdk"
 
       - name: Select Xcode
         if: env.HAS_ADS_KEY == 'true'
@@ -76,8 +80,17 @@ jobs:
 
       - name: Unit tests and demo build
         if: env.HAS_ADS_KEY == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          # The demo's released OpenVideo package is this repo; the job token reads it.
+          # Passed to git through the environment of this step only, never written to disk.
+          basic="$(printf 'x-access-token:%s' "$GITHUB_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::$basic"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.https://github.com/ezoic/open-video-swift-sdk.git.extraheader"
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $basic"
           SIM_NAME="$(xcrun simctl list devices available | grep -oE 'iPhone [0-9][0-9A-Za-z ]*' | head -n 1 | sed -E 's/[[:space:]]+$//' || true)"
           if [ -z "$SIM_NAME" ]; then
             echo "::error::No available iPhone simulator found on the runner"
@@ -90,6 +103,18 @@ jobs:
             -only-testing:OpenVideoCoreTests \
             -scmProvider system -skipPackagePluginValidation \
             COMPILER_INDEX_STORE_ENABLE=NO
+          # A release commit bumps the demo pin before its tag exists; build the
+          # demo only once the pinned tag is on GitHub.
+          pin="$(sed -nE 's/^[[:space:]]*version = ([0-9][^; ]*) *;/\1/p' Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj/project.pbxproj | head -n 1)"
+          if [[ ! "$pin" =~ ^[0-9]+[.][0-9]+[.][0-9]+(-[0-9A-Za-z]+([.][0-9A-Za-z]+)*)?$ ]]; then
+            echo "::error::Cannot read the demo's OpenVideo version pin"
+            exit 1
+          fi
+          tags="$(git ls-remote --tags https://github.com/ezoic/open-video-swift-sdk.git "refs/tags/v$pin" "refs/tags/$pin")"
+          if [ -z "$tags" ]; then
+            echo "::notice::OpenVideo $pin is not tagged yet; skipped the demo build from the released package."
+            exit 0
+          fi
           xcodebuild build -project Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj -scheme OpenVideoDemo \
             -destination "platform=iOS Simulator,name=$SIM_NAME" \
             -scmProvider system -skipPackagePluginValidation \
