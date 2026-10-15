@@ -39,7 +39,7 @@ Do **not** stamp `domain_id` 708527 or `is_humix_app=1` (those are the OV store 
 
 ## Mac verify (iPhone Simulator)
 
-This package is **iOS 14+** (same floor as the ads SDK). iOS 15 is included. Host `swift test` compiles `OpenVideoCore` as macOS and fails — do **not** add `.macOS` to `Package.swift`. Same test pattern as Ads (`ezoic-swift-sdk` GitHub Actions `test.yml`).
+Swift Package Manager supports **iOS 14+** (same floor as the ads SDK); CocoaPods requires **iOS 15+**. Host `swift test` compiles `OpenVideoCore` as macOS and fails — do **not** add `.macOS` to `Package.swift`. Same test pattern as Ads (`ezoic-swift-sdk` GitHub Actions `test.yml`).
 
 Google’s in-stream player package **3.28+** is iOS 15-only. This repo pins **3.23 ..< 3.28** so iOS 14 apps still compile.
 
@@ -51,6 +51,7 @@ GIT_CONFIG_KEY_0=url.ssh://git@github.com/.insteadOf \
 GIT_CONFIG_VALUE_0=https://github.com/ \
 xcodebuild test \
   -scheme OpenVideo-Package \
+  -scmProvider system \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
   -only-testing:OpenVideoCoreTests \
   -skipPackagePluginValidation \

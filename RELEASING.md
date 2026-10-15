@@ -13,7 +13,8 @@ Private repo. Installs need a GitHub account with read access to `ezoic/open-vid
      and the OpenVideo package `version` — the demo is the first app to install each release)
 2. Push to `master`; wait for the `CI` workflow to pass.
 3. `git tag -a vX.Y.Z -m "OpenVideo X.Y.Z" && git push origin vX.Y.Z`.
-4. The `Release` workflow checks every version string against the tag, runs
+4. The `Release` workflow checks the SDK version, client header, podspec version
+   and podspec source tag against the tag, runs
    `pod lib lint`, and creates the GitHub Release. A tag that does not match fails
    before anything is published. Prerelease tags use a hyphen: `vX.Y.Z-rc.1`.
 
@@ -23,11 +24,9 @@ Rerun an existing tag: Actions → Release → Run workflow → `tag`.
 
 Swift Package Manager: add `https://github.com/ezoic/open-video-swift-sdk.git`, exact
 version `X.Y.Z`, product `OpenVideo`. The package also resolves the private
-`ezoic/ezoic-swift-sdk`; a machine that clones over SSH needs:
-
-```sh
-git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
-```
+`ezoic/ezoic-swift-sdk`. For command-line builds using SSH credentials, use the
+per-command Git rewrite and `-scmProvider system` shown in `README.md` §Mac verify
+and §Demo. Those commands require an SSH key that can read both private repos.
 
 CocoaPods (iOS 15+), inside the app target:
 
@@ -36,7 +35,8 @@ use_frameworks! :linkage => :static
 pod 'OpenVideo', :git => 'git@github.com:ezoic/open-video-swift-sdk.git', :tag => 'vX.Y.Z'
 ```
 
-The app needs its own `GADApplicationIdentifier` in `Info.plist`, and should call
+The app needs its own `GADApplicationIdentifier` and an app-appropriate
+`NSUserTrackingUsageDescription` in `Info.plist`, and should call
 `OpenVideo.configure(domain:)` before a player view is shown.
 
 ## Privacy
