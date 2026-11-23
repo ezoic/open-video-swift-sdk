@@ -22,7 +22,7 @@ Rerun an existing tag: Actions → Release → Run workflow → `tag`.
 
 ## Install in an app
 
-Swift Package Manager: add `https://github.com/ezoic/open-video-swift-sdk.git`, exact
+Swift Package Manager (iOS 14+): add `https://github.com/ezoic/open-video-swift-sdk.git`, exact
 version `X.Y.Z`, product `OpenVideo`. The package also resolves the private
 `ezoic/ezoic-swift-sdk`. For command-line builds using SSH credentials, use the
 per-command Git rewrite and `-scmProvider system` shown in `README.md` §Mac verify
