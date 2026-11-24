@@ -17,7 +17,7 @@ public enum OpenVideoEndpoints {
 }
 
 public final class OpenVideoAPIClient: @unchecked Sendable {
-    public static let clientHeader = "OpenVideoSDK/0.1.1"
+    public static let clientHeader = "OpenVideoSDK/0.1.2"
     private let session: URLSession
 
     public init(session: URLSession = .shared) {

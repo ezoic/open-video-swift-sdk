@@ -12,7 +12,8 @@ let package = Package(
         .library(name: "OpenVideo", targets: ["OpenVideo"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/ezoic/ezoic-swift-sdk.git", from: "1.10.1"),
+        // Ads SDK 1.13.0 raised its minimum deployment target to iOS 15.
+        .package(url: "https://github.com/ezoic/ezoic-swift-sdk.git", "1.10.1"..<"1.13.0"),
         // 3.28+ Package.swift is iOS 15-only. 3.27.4 still .iOS(.v11) so this
         // package can stay iOS 14 (covers 15+), matching ezoic-swift-sdk.
         .package(
