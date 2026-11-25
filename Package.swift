@@ -5,17 +5,15 @@ import PackageDescription
 let package = Package(
     name: "OpenVideo",
     platforms: [
-        .iOS(.v14)
+        .iOS(.v15)
     ],
     products: [
         .library(name: "OpenVideoCore", targets: ["OpenVideoCore"]),
         .library(name: "OpenVideo", targets: ["OpenVideo"]),
     ],
     dependencies: [
-        // Ads SDK 1.13.0 raised its minimum deployment target to iOS 15.
-        .package(url: "https://github.com/ezoic/ezoic-swift-sdk.git", "1.10.1"..<"1.13.0"),
-        // 3.28+ Package.swift is iOS 15-only. 3.27.4 still .iOS(.v11) so this
-        // package can stay iOS 14 (covers 15+), matching ezoic-swift-sdk.
+        .package(url: "https://github.com/ezoic/ezoic-swift-sdk-dist.git", .upToNextMinor(from: "1.26.0")),
+        // Preserve the supported Google IMA range.
         .package(
             url: "https://github.com/googleads/swift-package-manager-google-interactive-media-ads-ios.git",
             "3.23.0"..<"3.28.0"
@@ -30,7 +28,7 @@ let package = Package(
             name: "OpenVideo",
             dependencies: [
                 "OpenVideoCore",
-                .product(name: "EzoicAdsSDK", package: "ezoic-swift-sdk"),
+                .product(name: "EzoicAdsSDK", package: "ezoic-swift-sdk-dist"),
                 .product(
                     name: "GoogleInteractiveMediaAds",
                     package: "swift-package-manager-google-interactive-media-ads-ios"

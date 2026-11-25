@@ -1,19 +1,27 @@
+import EzoicAdsSDK
 import OpenVideo
 import UIKit
 
-/// Official ND3 demo: configure hackasaur, then play the Acc video or playlist.
+/// Configures OpenVideo and presents consent before starting playback.
 final class DemoViewController: UIViewController, OpenVideoPlayerDelegate {
     private let status = UILabel()
     private let videoButton = UIButton(type: .system)
     private let playlistButton = UIButton(type: .system)
     private let playerHost = UIView()
     private var playerView: OpenVideoPlayerView?
+    private var didStartSetup = false
     private var configured = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         buildChrome()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard !didStartSetup else { return }
+        didStartSetup = true
         Task { await configureSDK() }
     }
 
@@ -22,6 +30,10 @@ final class DemoViewController: UIViewController, OpenVideoPlayerDelegate {
         status.text = "Configuring hackasaur.us…"
         do {
             try await OpenVideo.configure(domain: "hackasaur.us")
+            let consent = await EzoicAds.shared.presentConsentIfRequired(from: self)
+            if case .failed(let error) = consent {
+                print("OpenVideoDemo: consent presentation failed (playback continues): \(error)")
+            }
             configured = true
             status.text = "Ready OpenVideo \(OpenVideo.version)"
             videoButton.isEnabled = true

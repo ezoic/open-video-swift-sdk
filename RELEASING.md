@@ -1,63 +1,30 @@
-# Releasing OpenVideo (iOS)
-
-Private repo. Installs need a GitHub account with read access to `ezoic/open-video-swift-sdk`.
+# Releasing OpenVideo for iOS
 
 ## Cut a release
 
 1. Set the same version `X.Y.Z` in all of:
    - `Sources/OpenVideo/OpenVideo.swift` (`version`)
    - `Sources/OpenVideoCore/OpenVideoAPIClient.swift` (`clientHeader`)
-   - `OpenVideo.podspec` (`s.version` and `:tag => 'vX.Y.Z'`)
    - `Examples/OpenVideoDemo/OpenVideoDemo/Info.plist` (`CFBundleShortVersionString`)
-   - `Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj/project.pbxproj` (`MARKETING_VERSION`,
-     and the OpenVideo package `version` — the demo is the first app to install each release)
-2. Push to `master`; wait for the `CI` workflow to pass.
-3. `git tag -a vX.Y.Z -m "OpenVideo X.Y.Z" && git push origin vX.Y.Z`.
-4. The `Release` workflow checks the SDK version, client header, podspec version
-   and podspec source tag against the tag, runs
-   `pod lib lint`, and creates the GitHub Release. A tag that does not match fails
-   before anything is published. Prerelease tags use a hyphen: `vX.Y.Z-rc.1`.
+   - `Examples/OpenVideoDemo/OpenVideoDemo.xcodeproj/project.pbxproj` (`MARKETING_VERSION` and the exact OpenVideo package `version`)
+2. Push the release commit to `master` and wait for CI. CI runs the package tests and builds the demo when its pinned tag exists.
+3. Run `git tag -a vX.Y.Z -m "OpenVideo X.Y.Z" && git push origin vX.Y.Z`.
+4. The Release workflow checks the SDK version and client header against the tag and creates the GitHub Release. Prerelease tags use a hyphen, for example `vX.Y.Z-rc.1`.
+5. Rerun CI after the tag is available to build the demo against the release.
 
-Rerun an existing tag: Actions → Release → Run workflow → `tag`.
+To rerun the Release workflow for an existing tag, use Actions → Release → Run workflow and enter the tag.
 
 ## Install in an app
 
-Swift Package Manager (iOS 14+): add `https://github.com/ezoic/open-video-swift-sdk.git`, exact
-version `X.Y.Z`, product `OpenVideo`. The package also resolves the private
-`ezoic/ezoic-swift-sdk`. For command-line builds using SSH credentials, use the
-per-command Git rewrite and `-scmProvider system` shown in `README.md` §Mac verify
-and §Demo. Those commands require an SSH key that can read both private repos.
+Use Swift Package Manager with `https://github.com/ezoic/open-video-swift-sdk`, OpenVideo 0.2.0 or later, and iOS 15 or later. Add the `OpenVideo` product.
 
-CocoaPods (iOS 15+), inside the app target:
-
-```ruby
-use_frameworks! :linkage => :static
-pod 'OpenVideo', :git => 'git@github.com:ezoic/open-video-swift-sdk.git', :tag => 'vX.Y.Z'
-```
-
-The app needs its own `GADApplicationIdentifier` and an app-appropriate
-`NSUserTrackingUsageDescription` in `Info.plist`, and should call
-`OpenVideo.configure(domain:)` before a player view is shown.
+Before calling `OpenVideo.configure(domain:)`, an app that uses Ezoic Ads elsewhere or manages its own consent must initialize `EzoicAds` with the same domain. Other apps call `EzoicAds.shared.presentConsentIfRequired(from:)` from the first screen after configuration succeeds. See [Configure and play](README.md#configure-and-play) for the app setup and the consent flow.
 
 ## Privacy
 
-`Sources/OpenVideo/PrivacyInfo.xcprivacy` ships with both install routes. It declares
-product-interaction and usage analytics events, not linked to the user, no tracking.
-Update it whenever `PixelContract.swift` starts sending a new kind of data.
+The Swift package includes `Sources/OpenVideo/PrivacyInfo.xcprivacy`. Update it if the SDK changes the kinds of data it collects.
 
 ## Run the demo
 
-- Simulator: build with the command in `README.md` §Demo (it fetches the private
-  packages over SSH with system git), then install the `.app` with `xcrun simctl install booted <path>`. Tap Allow on the tracking prompt.
-- Device: needs a member of the Ezoic Apple developer team, the device registered on
-  that team, and development signing for `com.ezoic.openvideo.demo`. Open the project
-  in Xcode, pick the team, select the device, Run.
-
-## CI secrets
-
-- `ADS_SWIFT_DEPLOY_KEY`: private half of a read-only deploy key on
-  `ezoic/ezoic-swift-sdk`. Without it the SPM job prints a notice and does nothing;
-  the CocoaPods job still validates the package.
-- The demo installs the released OpenVideo tag from this repo; the job's own token
-  reads it, no extra secret. Until the pinned tag exists the demo build is skipped
-  with a notice.
+- Simulator. Build using the command in [Demo](README.md#demo) or run the scheme from Xcode. Respond to any tracking or consent prompts.
+- Device. Choose your development team in the app's signing settings, select a registered device, and run from Xcode. Use a bundle identifier and signing settings for your team.

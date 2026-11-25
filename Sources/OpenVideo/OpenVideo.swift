@@ -13,7 +13,7 @@ import EzoicAdsSDK
 
 /// Publisher Open Video iOS SDK. Call `configure(domain:)` before creating player views.
 public enum OpenVideo {
-    public static let version = "0.1.2"
+    public static let version = "0.2.0"
 
     /// Placeholder instream unit (same numeric id the Flutter store-app spike used).
     /// Sol does not use `ad_unit_id` to pick GAM placement; identity is domain + bundle.

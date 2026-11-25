@@ -11,6 +11,7 @@
 		A10000000000000000000016 /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002 /* DemoViewController.swift */; };
 		A10000000000000000000019 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* SceneDelegate.swift */; };
 		A10000000000000000000017 /* OpenVideo in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000014 /* OpenVideo */; };
+		A1000000000000000000001A /* EzoicAdsSDK in Frameworks */ = {isa = PBXBuildFile; productRef = A1000000000000000000001C /* EzoicAdsSDK */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000017 /* OpenVideo in Frameworks */,
+				A1000000000000000000001A /* EzoicAdsSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +80,7 @@
 			name = OpenVideoDemo;
 			packageProductDependencies = (
 				A10000000000000000000014 /* OpenVideo */,
+				A1000000000000000000001C /* EzoicAdsSDK */,
 			);
 			productName = OpenVideoDemo;
 			productReference = A10000000000000000000004 /* OpenVideoDemo.app */;
@@ -109,6 +112,7 @@
 			mainGroup = A1000000000000000000000A /* Root */;
 			packageReferences = (
 				A10000000000000000000013 /* XCRemoteSwiftPackageReference "open-video-swift-sdk" */,
+				A1000000000000000000001B /* XCRemoteSwiftPackageReference "ezoic-swift-sdk-dist" */,
 			);
 			productRefGroup = A1000000000000000000000C /* Products */;
 			projectDirPath = "";
@@ -153,7 +157,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -171,7 +175,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -189,12 +193,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = OpenVideoDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.2;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ezoic.openvideo.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -214,12 +218,12 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = OpenVideoDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.2;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ezoic.openvideo.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -259,7 +263,15 @@
 			repositoryURL = "https://github.com/ezoic/open-video-swift-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.1.2;
+				version = 0.2.0;
+			};
+		};
+		A1000000000000000000001B /* XCRemoteSwiftPackageReference "ezoic-swift-sdk-dist" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ezoic/ezoic-swift-sdk-dist.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.26.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -269,6 +281,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A10000000000000000000013 /* XCRemoteSwiftPackageReference "open-video-swift-sdk" */;
 			productName = OpenVideo;
+		};
+		A1000000000000000000001C /* EzoicAdsSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1000000000000000000001B /* XCRemoteSwiftPackageReference "ezoic-swift-sdk-dist" */;
+			productName = EzoicAdsSDK;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
