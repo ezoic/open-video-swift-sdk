@@ -4,7 +4,7 @@ Add an Open Video player to your iOS app. The SDK supports individual videos, pl
 
 ## Install
 
-Requires iOS 15 or later. In Xcode, choose File → Add Package Dependencies, enter `https://github.com/ezoic/open-video-swift-sdk`, select version 0.2.0 or later, and add the `OpenVideo` product to your app target.
+Requires iOS 15 or later and Xcode 26.2 or later (the Ezoic Ads SDK binary this package links is built with Xcode 26). In Xcode, choose File → Add Package Dependencies, enter `https://github.com/ezoic/open-video-swift-sdk`, select version 0.2.0 or later, and add the `OpenVideo` product to your app target.
 
 To call the Ads APIs below, also add the `EzoicAdsSDK` product from `https://github.com/ezoic/ezoic-swift-sdk-dist`. OpenVideo 0.2.0 requires Ads 1.26.x, so use a compatible Ads version in your app.
 
